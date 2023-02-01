@@ -17,6 +17,12 @@ module.exports = {
       },
       fontFamily: {
         sans:['var(--font-roboto)']
+      },
+      fontSize:{
+        'ignite-md':'1.125rem',
+        'ignite-lg':'1.25rem',
+        'ignite-xl':'1.5rem',
+        'ignite-2xl':'2rem'
       }
     },
   },

@@ -13,8 +13,8 @@ const roboto = Roboto({
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <main className={`${roboto.variable} font-sans`}>
-      <div className='flex flex-col items-start content-center min-h-full'>
-        <header className='py-8 w-full max-w-[1180px] mx-auto'>
+      <div className='flex flex-col items-start content-center min-h-full max-w-[1180px]'>
+        <header className='py-8 items mx-auto justify-center'>
           <Image
             src={logoImg}
             alt=''

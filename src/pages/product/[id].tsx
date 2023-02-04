@@ -1,6 +1,7 @@
-import { GetStaticPaths, GetStaticProps } from "next"
+import axios from "axios"
+import { GetStaticProps } from "next"
 import Image from "next/image"
-import { useRouter } from "next/router"
+import { useState } from "react"
 import Stripe from "stripe"
 import { stripe } from "../../lib/stripe"
 
@@ -11,19 +12,31 @@ interface productProps {
     imageURL: string,
     price: string,
     description: string,
+    defaultPriceId: string,
   }
 }
 
 export default function Product({ product }: productProps) {
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
 
-  const { isFallback } = useRouter()
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSession(true)
 
-  if (isFallback) {
-    return (
-      <h1 className="text-ignite-xl text-center">
-        Carregando...
-      </h1>
-    )
+      const response = await axios.post('/api/checkout', {
+        priceId: product.defaultPriceId
+      })
+
+      const { checkoutUrl } = response.data
+
+      window.location.href = checkoutUrl;
+    } catch (err) {
+      // Conectar com uma ferramenta de oservabilidade (Datadog / Sentry)
+
+      setIsCreatingCheckoutSession(false)
+
+      alert('Falha ao redirecionar ao checkout')
+    }
   }
 
   return (
@@ -35,7 +48,13 @@ export default function Product({ product }: productProps) {
         <h1 className="text-ignite-2xl py-4 font-bold">{product.name}</h1>
         <span className="text-ignite-2xl text-green300 pb-10">{product.price}</span>
         <p className="text-ignite-md pb-6 ">{product.description}</p>
-        <button className="py-5 bg-green500 rounded-lg mt-auto">Comprar Agora</button>
+        <button
+          disabled={isCreatingCheckoutSession}
+          onClick={handleBuyProduct}
+          className="py-5 bg-green500 rounded-lg mt-auto disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green300 disabled:hover:bg-green500"
+        >
+          Comprar Agora
+        </button>
       </div>
     </div>
   )
@@ -46,7 +65,7 @@ export const getStaticPaths = async () => {
     paths: [
       { params: { id: 'prod_NHMDmxMYH1jKjh' } } // optional
     ],
-    fallback: true,
+    fallback: 'blocking',
   }
 }
 
@@ -70,6 +89,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
           currency: 'BRL',
         }).format(price.unit_amount! / 100),
         description: product.description,
+        defaultPriceId: price.id,
       }
     },
     revalidate: 60 * 60 * 1 // 1 hour

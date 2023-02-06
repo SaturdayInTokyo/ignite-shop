@@ -1,5 +1,5 @@
 import Image from "next/image";
-
+import Head from "next/head";
 import 'keen-slider/keen-slider.min.css'
 import { useKeenSlider } from 'keen-slider/react'
 import { stripe } from "../lib/stripe";
@@ -26,27 +26,35 @@ export default function home({ products }: HomeProps) {
   })
 
   return (
-    <div className="flex mx-auto justify-center items-start max-w-[calc(100vw_-_((100vw_-_full)_/_2))] min-h-[656px] keen-slider" ref={sliderRef}>
-      {products.map(product => {
-        return (
-          <Link
-            href={`/product/${product.id}`}
-            key={product.id}
-            className="flex items-end justify-center pb-1 bg-gradient-to-b from-[#1ea483] to-[#7465d4] rounded-lg cursor-pointer relative group overflow-hidden keen-slider__slide"
-            prefetch={false}
-          >
-            <Image src={product.imageURL} width={520} height={480} alt='' className="object-contain mb-8" />
-            <footer className="flex absolute items-center justify-between w-[99%] p-4 rounded-md bg-[#00000099] transform translate-y-[110%] opacity-0 transition-all duration-[0.2s] ease-in-out group-hover:transform group-hover:translate-y-[0%] group-hover:opacity-100">
-              <strong className="">{product.name}</strong>
-              <span className="text-ignite-lg text-green300">{product.price}</span>
-            </footer>
-          </Link>
+    <>
+      <Head>
+        <title>Home - Ignite Shop</title>
+      </Head>
 
-        )
-      })}
-    </div>
+      <div className="flex mx-auto justify-center items-start max-w-[calc(100vw_-_((100vw_-_full)_/_2))] min-h-[656px] keen-slider" ref={sliderRef}>
+        {products.map(product => {
+          return (
+            <Link
+              href={`/product/${product.id}`}
+              key={product.id}
+              className="flex items-end justify-center pb-1 bg-gradient-to-b from-[#1ea483] to-[#7465d4] rounded-lg cursor-pointer relative group overflow-hidden keen-slider__slide"
+              prefetch={false}
+            >
+              <Image src={product.imageURL} width={520} height={480} alt='' className="object-contain mb-8" />
+              <footer className="flex absolute items-center justify-between w-[99%] p-4 rounded-md bg-[#00000099] transform translate-y-[110%] opacity-0 transition-all duration-[0.2s] ease-in-out group-hover:transform group-hover:translate-y-[0%] group-hover:opacity-100">
+                <strong className="">{product.name}</strong>
+                <span className="text-ignite-lg text-green300">{product.price}</span>
+              </footer>
+            </Link>
+
+          )
+        })}
+      </div>
+    </>
   )
 }
+
+
 
 export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({

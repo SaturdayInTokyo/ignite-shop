@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useState } from "react"
 import Stripe from "stripe"
 import { stripe } from "../../lib/stripe"
+import Head from "next/head"
 
 interface productProps {
   product: {
@@ -40,23 +41,29 @@ export default function Product({ product }: productProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 w-3/4 mx-auto gap-24 mb-20">
-      <div className="flex h-[35rem] justify-center rounded-lg box-border bg-gradient-to-b from-[#1ea483] to-[#7465d4]">
-        <Image src={product.imageURL} alt="" width={520} height={480} />
+    <>
+      <Head>
+        <title>{product.name} - Ignite Shop</title>
+      </Head>
+
+      <div className="grid grid-cols-2 w-3/4 mx-auto gap-24 mb-20">
+        <div className="flex h-[35rem] justify-center rounded-lg box-border bg-gradient-to-b from-[#1ea483] to-[#7465d4]">
+          <Image src={product.imageURL} alt="" width={520} height={480} />
+        </div>
+        <div className="flex flex-col">
+          <h1 className="text-ignite-2xl py-4 font-bold">{product.name}</h1>
+          <span className="text-ignite-2xl text-green300 pb-10">{product.price}</span>
+          <p className="text-ignite-md pb-6 ">{product.description}</p>
+          <button
+            disabled={isCreatingCheckoutSession}
+            onClick={handleBuyProduct}
+            className="py-5 bg-green500 rounded-lg mt-auto disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green300 disabled:hover:bg-green500"
+          >
+            Comprar Agora
+          </button>
+        </div>
       </div>
-      <div className="flex flex-col">
-        <h1 className="text-ignite-2xl py-4 font-bold">{product.name}</h1>
-        <span className="text-ignite-2xl text-green300 pb-10">{product.price}</span>
-        <p className="text-ignite-md pb-6 ">{product.description}</p>
-        <button
-          disabled={isCreatingCheckoutSession}
-          onClick={handleBuyProduct}
-          className="py-5 bg-green500 rounded-lg mt-auto disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green300 disabled:hover:bg-green500"
-        >
-          Comprar Agora
-        </button>
-      </div>
-    </div>
+    </>
   )
 }
 

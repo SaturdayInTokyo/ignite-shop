@@ -32,7 +32,7 @@ export default function Product({ product }: productProps) {
 
       window.location.href = checkoutUrl;
     } catch (err) {
-      // Conectar com uma ferramenta de oservabilidade (Datadog / Sentry)
+      // Conectar com uma ferramenta de observabilidade (Datadog / Sentry)
 
       setIsCreatingCheckoutSession(false)
 
@@ -57,9 +57,9 @@ export default function Product({ product }: productProps) {
           <button
             disabled={isCreatingCheckoutSession}
             onClick={handleBuyProduct}
-            className="py-5 bg-green500 rounded-lg mt-auto disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green300 disabled:hover:bg-green500"
+            className="py-5 duration-[0.1s] bg-green500 rounded-lg mt-auto disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green300 disabled:hover:bg-green500"
           >
-            Comprar Agora
+            Colocar na Sacola
           </button>
         </div>
       </div>

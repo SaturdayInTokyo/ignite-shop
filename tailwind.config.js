@@ -16,7 +16,7 @@ module.exports = {
         green300: '#00b37e'
       },
       fontFamily: {
-        sans:['var(--font-roboto)']
+        roboto:['var(--font-roboto)']
       },
       fontSize:{
         'ignite-md':'1.125rem',
@@ -26,5 +26,7 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require("tailwindcss-radix")(),
+  ],
 }

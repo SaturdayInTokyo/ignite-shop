@@ -6,6 +6,7 @@ import { stripe } from "../lib/stripe";
 import Stripe from "stripe";
 import { GetStaticProps } from "next";
 import Link from "next/link";
+import { Handbag } from 'phosphor-react'
 
 interface HomeProps {
   products: {
@@ -31,19 +32,23 @@ export default function home({ products }: HomeProps) {
         <title>Home - Ignite Shop</title>
       </Head>
 
-      <div className="flex mx-auto justify-center items-start max-w-[calc(100vw_-_((100vw_-_full)_/_2))] min-h-[656px] keen-slider" ref={sliderRef}>
+      <div className="flex mx-auto justify-center items-start keen-slider" ref={sliderRef}>
+        
         {products.map(product => {
           return (
             <Link
               href={`/product/${product.id}`}
               key={product.id}
-              className="flex items-end justify-center pb-1 bg-gradient-to-b from-[#1ea483] to-[#7465d4] rounded-lg cursor-pointer relative group overflow-hidden keen-slider__slide"
+              className="flex justify-center pb-1 bg-gradient-to-b from-[#1ea483] to-[#7465d4] rounded-lg cursor-pointer relative group overflow-hidden keen-slider__slide"
               prefetch={false}
             >
-              <Image src={product.imageURL} width={520} height={480} alt='' className="object-contain mb-8" />
-              <footer className="flex absolute items-center justify-between w-[99%] p-4 rounded-md bg-[#00000099] transform translate-y-[110%] opacity-0 transition-all duration-[0.2s] ease-in-out group-hover:transform group-hover:translate-y-[0%] group-hover:opacity-100">
-                <strong className="">{product.name}</strong>
-                <span className="text-ignite-lg text-green300">{product.price}</span>
+              <Image src={product.imageURL} width={520} height={480} alt='' className="object-contain pb-16" />
+              <footer className="flex absolute bottom-1 items-center justify-between w-[99%] p-4 rounded-md bg-[#00000099] transform translate-y-[110%] opacity-0 transition-all duration-[0.2s] ease-in-out group-hover:transform group-hover:translate-y-[0%] group-hover:opacity-100">
+                <div className="flex flex-col">
+                  <strong>{product.name}</strong>
+                  <span className="text-green300 font-bold text-2xl">{product.price}</span>
+                </div>
+                <span className="bg-green500 p-2 rounded-md hover:bg-green300"><Handbag size={27} /></span>
               </footer>
             </Link>
 

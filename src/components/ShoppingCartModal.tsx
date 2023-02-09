@@ -84,7 +84,8 @@ export function ShoppingCartModal() {
               {new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
-              }).format(getTotalPrice() / 100)}</span>
+              }).format(getTotalPrice() / 100)}
+            </span>
           </div>
           {enableBuyButton()}
         </div>

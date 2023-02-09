@@ -1,12 +1,12 @@
-import axios from "axios"
 import { GetStaticProps } from "next"
 import Image from "next/image"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Stripe from "stripe"
 import { stripe } from "../../lib/stripe"
 import Head from "next/head"
+import { CartContext } from "../../context/CartContext"
 
-interface productProps {
+export interface ProductProps {
   product: {
     id: string,
     name: string,
@@ -17,27 +17,24 @@ interface productProps {
   }
 }
 
-export default function Product({ product }: productProps) {
-  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+export default function Product({ product }: ProductProps) {
+  
+  const { setCartItems } = useContext(CartContext)
 
-  async function handleBuyProduct() {
-    try {
-      setIsCreatingCheckoutSession(true)
-
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId
-      })
-
-      const { checkoutUrl } = response.data
-
-      window.location.href = checkoutUrl;
-    } catch (err) {
-      // Conectar com uma ferramenta de observabilidade (Datadog / Sentry)
-
-      setIsCreatingCheckoutSession(false)
-
-      alert('Falha ao redirecionar ao checkout')
-    }
+  function handleAddItemOnCart(id: string, name: string, imageURL: String, price: string) {
+    setCartItems(currentItem => {
+      if (currentItem.find(item => item.name === product.name) == null) {
+        return [...currentItem, { id, name, imageURL, price, quantity: 1 }]
+      } else {
+        return currentItem.map(item => {
+          if (item.name === product.name) {
+            return { ...item, quantity: item.quantity + 1 }
+          } else {
+            return item
+          }
+        })
+      }
+    })
   }
 
   return (
@@ -55,8 +52,7 @@ export default function Product({ product }: productProps) {
           <span className="text-ignite-2xl text-green300 pb-10">{product.price}</span>
           <p className="text-ignite-md pb-6 ">{product.description}</p>
           <button
-            disabled={isCreatingCheckoutSession}
-            onClick={handleBuyProduct}
+            onClick={() => handleAddItemOnCart(product.id, product.name, product.imageURL, product.price)}
             className="py-5 duration-[0.1s] bg-green500 rounded-lg mt-auto disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green300 disabled:hover:bg-green500"
           >
             Colocar na Sacola

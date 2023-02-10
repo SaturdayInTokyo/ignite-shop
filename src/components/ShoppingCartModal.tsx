@@ -16,7 +16,7 @@ export function ShoppingCartModal() {
 
     setIsCreatingCheckoutSession(true)
 
-    const lineItems = cartItems?.map(item => {
+    const lineItems = cartItems.map(item => {
       return {
         price: item.defaultPriceId,
         quantity: item.quantity,

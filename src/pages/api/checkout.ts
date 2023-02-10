@@ -1,5 +1,5 @@
-import { Stripe } from 'stripe';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { stripe } from '../../lib/stripe';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
@@ -8,10 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const body = JSON.parse(req.body)
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? '', {
-      apiVersion: '2022-11-15'
-    });
 
     const session = await stripe.checkout.sessions.create({
       success_url: successUrl,

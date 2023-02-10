@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 
 
-export default function ProductOnCart({ id, imageURL, name, price, quantity, }: CartItem) {
+export default function ProductOnCart({ id, imageURL, name, price, quantity, defaultPriceId }: CartItem) {
   const { handleAddItemOnCart, setCartItems } = useContext(CartContext)
 
   const decreaseCartQuantity = () => {
@@ -53,7 +53,7 @@ export default function ProductOnCart({ id, imageURL, name, price, quantity, }: 
         <div className="flex gap-3">
           <button
             className="text-green500 hover:text-green300 duration-[0.2s]"
-            onClick={() => handleAddItemOnCart(id, name, imageURL, price)}
+            onClick={() => handleAddItemOnCart(id, name, imageURL, price, defaultPriceId)}
           >
             <Plus size={17} />
           </button>

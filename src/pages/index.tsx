@@ -13,7 +13,7 @@ interface HomeProps {
     id: string,
     name: string,
     imageURL: string,
-    price: string,
+    price: number,
   }[]
 }
 
@@ -48,7 +48,7 @@ export default function home({ products }: HomeProps) {
                   <strong>{product.name}</strong>
                   <span className="text-green300 font-bold text-2xl">{product.price}</span>
                 </div>
-                <span className="bg-green500 p-2 rounded-md hover:bg-green300"><Handbag size={27} /></span>
+                <span className="bg-green500 p-2 rounded-md"><Handbag size={27} /></span>
               </footer>
             </Link>
 
@@ -58,8 +58,6 @@ export default function home({ products }: HomeProps) {
     </>
   )
 }
-
-
 
 export const getStaticProps: GetStaticProps = async () => {
   const response = await stripe.products.list({

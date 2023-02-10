@@ -11,31 +11,15 @@ export interface ProductProps {
     id: string,
     name: string,
     imageURL: string,
-    price: string,
+    price: number,
     description: string,
     defaultPriceId: string,
   }
 }
 
 export default function Product({ product }: ProductProps) {
-  
-  const { setCartItems } = useContext(CartContext)
+  const { handleAddItemOnCart } = useContext(CartContext)
 
-  function handleAddItemOnCart(id: string, name: string, imageURL: String, price: string) {
-    setCartItems(currentItem => {
-      if (currentItem.find(item => item.name === product.name) == null) {
-        return [...currentItem, { id, name, imageURL, price, quantity: 1 }]
-      } else {
-        return currentItem.map(item => {
-          if (item.name === product.name) {
-            return { ...item, quantity: item.quantity + 1 }
-          } else {
-            return item
-          }
-        })
-      }
-    })
-  }
 
   return (
     <>
@@ -49,7 +33,12 @@ export default function Product({ product }: ProductProps) {
         </div>
         <div className="flex flex-col">
           <h1 className="text-ignite-2xl py-4 font-bold">{product.name}</h1>
-          <span className="text-ignite-2xl text-green300 pb-10">{product.price}</span>
+          <span className="text-ignite-2xl text-green300 pb-10">
+            {new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(product.price! / 100)}
+          </span>
           <p className="text-ignite-md pb-6 ">{product.description}</p>
           <button
             onClick={() => handleAddItemOnCart(product.id, product.name, product.imageURL, product.price)}
@@ -87,10 +76,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
         id: product.id,
         name: product.name,
         imageURL: product.images[0],
-        price: new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }).format(price.unit_amount! / 100),
+        price: price.unit_amount,
         description: product.description,
         defaultPriceId: price.id,
       }

@@ -8,6 +8,30 @@ import { ProductOnCart } from "./ProductOnCard";
 export function ShoppingCartModal() {
   const { cartQuantity, cartItems } = useContext(CartContext)
 
+  const enableBuyButton = () => {
+    if (cartQuantity >= 1) {
+      return (
+        <div className="flex justify-center rounded-lg bg-green500 hover:bg-green300 cursor-pointer duration-[0.1s] ">
+          <button
+            className="py-5"
+          >
+            Finalizar Compra
+          </button>
+        </div>
+      )
+    } else {
+      return (
+        <div className="flex justify-center rounded-lg bg-green500 opacity-60 cursor-not-allowed">
+          <button
+            className="py-5 cursor-not-allowed"
+          >
+            Finalizar Compra
+          </button>
+        </div>
+      )
+    }
+  }
+
   const itemCount = cartQuantity
 
   const handleItemCount = () => {
@@ -24,6 +48,15 @@ export function ShoppingCartModal() {
         <span></span>
       )
     }
+  }
+
+  const getTotalPrice = () => {
+    return (
+      cartItems.reduce((total, cartItem) => {
+        const item = cartItems.find(item => item.name === cartItem.name)
+        return total + ((item?.price) || 0) * cartItem.quantity
+      }, 0)
+    )
   }
 
   return (
@@ -47,15 +80,14 @@ export function ShoppingCartModal() {
           </div>
           <div className="flex justify-between mb-14">
             <span className="font-bold text-lg">valor total</span>
-            <span className="font-bold text-2xl">R$ 270,00</span>
+            <span className="font-bold text-2xl">
+              {new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              }).format(getTotalPrice() / 100)}
+            </span>
           </div>
-          <div className="flex justify-center rounded-lg bg-green500 hover:bg-green300 cursor-pointer duration-[0.1s] ">
-            <button
-              className="py-5"
-            >
-              Finalizar Compra
-            </button>
-          </div>
+          {enableBuyButton()}
         </div>
       </Content>
     </DialogPortal>

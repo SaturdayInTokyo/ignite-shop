@@ -1,9 +1,8 @@
 // import axios from 'axios'
-import { GetServerSideProps, GetStaticProps } from 'next'
-import { createContext, ReactNode, useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { GetServerSideProps } from 'next'
+import { createContext, ReactNode, useState, Dispatch, SetStateAction } from 'react'
 import Stripe from 'stripe'
 import { stripe } from '../lib/stripe'
-import { ProductProps } from '../pages/product/[id]'
 
 interface CartProviderProps {
   children: ReactNode
@@ -13,7 +12,7 @@ export interface CartItem {
   id: string,
   name: string,
   imageURL: string,
-  price: string,
+  price: number,
   quantity?: number,
 }
 
@@ -21,12 +20,29 @@ interface CartItemContext {
   cartItems: CartItem[],
   setCartItems: Dispatch<SetStateAction<CartItem[]>>
   cartQuantity?: number,
+  handleAddItemOnCart: (id: string, name: string, imageURL: String, price: number) => void
 }
 
 export const CartContext = createContext({} as CartItemContext)
 
-export function CartProvider({ children }: CartProviderProps, { product }: ProductProps) {
+export function CartProvider({ children }: CartProviderProps) {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
+
+  function handleAddItemOnCart(id: string, name: string, imageURL: String, price: number) {
+    setCartItems(currentItem => {
+      if (currentItem.find(item => item.name === name) == null) {
+        return [...currentItem, { id, name, imageURL, price, quantity: 1 }]
+      } else {
+        return currentItem.map(item => {
+          if (item.name === name) {
+            return { ...item, quantity: item.quantity + 1 }
+          } else {
+            return item
+          }
+        })
+      }
+    })
+  }
   // const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
 
   const cartQuantity = cartItems.reduce(
@@ -59,20 +75,12 @@ export function CartProvider({ children }: CartProviderProps, { product }: Produ
         cartItems,
         setCartItems,
         cartQuantity,
+        handleAddItemOnCart,
       }}
     >
       {children}
     </CartContext.Provider>
   )
-}
-
-export const getStaticPaths = async () => {
-  return {
-    paths: [
-      { params: { id: 'prod_NHMDmxMYH1jKjh' } } // optional
-    ],
-    fallback: 'blocking',
-  }
 }
 
 export const getServerSideProps: GetServerSideProps<any, { id: string }> = async ({ params }) => {

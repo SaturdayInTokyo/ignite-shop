@@ -13,8 +13,9 @@ interface SuccessProps {
   }
 }
 
-
 export default function Success({ customerName, product }: SuccessProps) {
+
+  console.log(product)
   return (
     <>
       <Head>
@@ -40,6 +41,7 @@ export default function Success({ customerName, product }: SuccessProps) {
     </>
   )
 }
+
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   if (!query.session_id) {

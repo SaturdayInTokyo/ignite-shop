@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next"
 import Image from "next/image"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import Stripe from "stripe"
 import { stripe } from "../../lib/stripe"
 import Head from "next/head"
@@ -19,7 +19,6 @@ export interface ProductProps {
 
 export default function Product({ product }: ProductProps) {
   const { handleAddItemOnCart } = useContext(CartContext)
-
 
   return (
     <>
@@ -41,7 +40,7 @@ export default function Product({ product }: ProductProps) {
           </span>
           <p className="text-ignite-md pb-6 ">{product.description}</p>
           <button
-            onClick={() => handleAddItemOnCart(product.id, product.name, product.imageURL, product.price)}
+            onClick={() => handleAddItemOnCart(product.id, product.name, product.imageURL, product.price, product.defaultPriceId)}
             className="py-5 duration-[0.1s] bg-green500 rounded-lg mt-auto disabled:opacity-60 disabled:cursor-not-allowed hover:bg-green300 disabled:hover:bg-green500"
           >
             Colocar na Sacola

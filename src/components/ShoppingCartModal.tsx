@@ -1,27 +1,52 @@
 import { Content, DialogClose, DialogPortal, DialogTitle, Overlay } from "@radix-ui/react-dialog";
-
 import { X } from 'phosphor-react'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { CartContext } from "../context/CartContext";
-import { ProductOnCart } from "./ProductOnCard";
+import ProductOnCart from "./ProductOnCard";
 
 export function ShoppingCartModal() {
   const { cartQuantity, cartItems } = useContext(CartContext)
 
+  const itemCount = cartQuantity
+
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
+
+
+  async function handleCheckout() {
+
+    setIsCreatingCheckoutSession(true)
+
+    const lineItems = cartItems?.map(item => {
+      return {
+        price: item.defaultPriceId,
+        quantity: item.quantity,
+      }
+    })
+
+    const res = await fetch('/api/checkout', {
+      method: 'POST',
+      body: JSON.stringify({ lineItems: lineItems })
+    })
+
+    const checkout = await res.json()
+    window.location.href = checkout.session.url
+
+  }
+
   const enableBuyButton = () => {
     if (cartQuantity >= 1) {
       return (
-        <div className="flex justify-center rounded-lg bg-green500 hover:bg-green300 cursor-pointer duration-[0.1s] ">
-          <button
-            className="py-5"
-          >
-            Finalizar Compra
-          </button>
-        </div>
+        <button
+          className="flex justify-center py-5 rounded-lg bg-green500 hover:bg-green300 cursor-pointer duration-[0.1s] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-green500 "
+          disabled={isCreatingCheckoutSession}
+          onClick={() => handleCheckout()}
+        >
+          Finalizar Compra
+        </button>
       )
     } else {
       return (
-        <div className="flex justify-center rounded-lg bg-green500 opacity-60 cursor-not-allowed">
+        <div className="flex justify-center rounded-lg bg-green500 opacity-50 cursor-not-allowed">
           <button
             className="py-5 cursor-not-allowed"
           >
@@ -31,8 +56,6 @@ export function ShoppingCartModal() {
       )
     }
   }
-
-  const itemCount = cartQuantity
 
   const handleItemCount = () => {
     if (itemCount === 1) {

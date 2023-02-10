@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 
 
-export function ProductOnCart({ id, imageURL, name, price, quantity, }: CartItem) {
+export default function ProductOnCart({ id, imageURL, name, price, quantity, }: CartItem) {
   const { handleAddItemOnCart, setCartItems } = useContext(CartContext)
 
   const decreaseCartQuantity = () => {
